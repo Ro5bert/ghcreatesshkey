@@ -1,0 +1,16 @@
+#/bin/sh
+
+usage() {
+	echo $0 [account name] [key title]
+	exit 1
+}
+
+[ $# -eq 2 ] || usage
+
+read -r password
+curl -u "$1":"$password" -d @- https://api.github.com/user/keys <<EOF
+{
+	"title": "$2",
+	"key": "$(cat ~/.ssh/id_rsa.pub | awk '{print $1, $2}')"
+}
+EOF
